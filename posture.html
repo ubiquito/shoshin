@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Posture — Shoshin</title>
+  <meta name="theme-color" content="#f8f6f1">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #f8f6f1; --text: #1a1a1a; --text-light: #6b6860;
+      --accent: #8b7355; --rule: #d4cfc5;
+    }
+    html, body { height: 100%; background: var(--bg); color: var(--text); }
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      display: flex; flex-direction: column; align-items: center;
+      min-height: 100vh; padding: 0 24px;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wordmark {
+      margin-top: 48px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      font-size: 13px; letter-spacing: 0.12em; color: var(--text-light);
+      text-decoration: none; text-transform: uppercase;
+    }
+    .wordmark:hover { color: var(--accent); }
+    .gate { width: 100%; max-width: 560px; height: 1px; background: var(--rule); margin-top: 24px; }
+    .container { width: 100%; max-width: 560px; }
+    .threshold { margin-top: 72px; font-size: 20px; line-height: 1.6; font-style: italic; }
+    .settle {
+      margin-top: 48px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      font-size: 13px; color: var(--text-light); letter-spacing: 0.08em;
+    }
+    .practice { margin-top: 64px; }
+    .step {
+      font-size: 18px; line-height: 1.8; color: var(--text);
+      padding: 20px 0; border-bottom: 1px solid var(--rule);
+      opacity: 0; transform: translateY(8px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .step.visible { opacity: 1; transform: translateY(0); }
+    .step:last-of-type { border-bottom: none; }
+    .begin-btn {
+      margin-top: 40px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      font-size: 14px; color: var(--text-light); background: none;
+      border: 1px solid var(--rule); padding: 10px 24px;
+      cursor: pointer; letter-spacing: 0.06em;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .begin-btn:hover { color: var(--accent); border-color: var(--accent); }
+    .rule { width: 100%; height: 1px; background: var(--rule); margin-top: 80px; }
+    .close-line {
+      margin-top: 40px; margin-bottom: 80px;
+      font-size: 16px; font-style: italic; color: var(--text-light); line-height: 1.8;
+      opacity: 0; transition: opacity 1.4s ease;
+    }
+    .close-line.visible { opacity: 1; }
+    .rule-close { opacity: 0; transition: opacity 1.4s ease; }
+    .rule-close.visible { opacity: 1; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <a class="wordmark" href="index.html">Shoshin</a>
+  <div class="gate"></div>
+
+  <div class="container">
+    <p class="threshold">Before you begin: arrange yourself.</p>
+    <p class="settle">Settle.</p>
+
+    <div class="practice" id="practice">
+      <div class="step" id="s1">Spine.</div>
+      <div class="step" id="s2">Hands, open or resting.</div>
+      <div class="step" id="s3">One breath, unhurried.</div>
+    </div>
+
+    <button class="begin-btn" id="beginBtn" onclick="begin()">Begin.</button>
+
+    <div class="rule rule-close" id="closeRule"></div>
+    <p class="close-line" id="closeLine">To take this posture is itself to have the right state of mind.</p>
+  </div>
+
+  <script>
+    function begin() {
+      document.getElementById('beginBtn').classList.add('hidden');
+      const steps = ['s1', 's2', 's3'];
+      steps.forEach((id, i) => {
+        setTimeout(() => {
+          document.getElementById(id).classList.add('visible');
+        }, i * 2400);
+      });
+      // After arrangement, hold for 60 seconds of silence
+      // Then the closing quote appears — the posture was the practice
+      setTimeout(() => {
+        document.getElementById('closeRule').classList.add('visible');
+        setTimeout(() => {
+          document.getElementById('closeLine').classList.add('visible');
+        }, 800);
+      }, steps.length * 2400 + 60000);
+    }
+  </script>
+<div style="text-align:center;margin-top:64px;padding-top:24px;border-top:1px solid #d4cfc5;"><a href="module-03.html" style="font-family:system-ui,sans-serif;font-size:12px;letter-spacing:0.08em;color:#d4cfc5;text-decoration:none;">return to this week</a></div>
+</body>
+</html>

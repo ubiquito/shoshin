@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 10: From Nothingness — Shoshin</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --bg: #f8f6f1; --text: #1a1a1a; --text-light: #6b6860; --accent: #8b7355; --rule: #d4cfc5; }
+    body { font-family: 'Georgia', 'Times New Roman', serif; background-color: var(--bg); color: var(--text); line-height: 1.8; padding: 48px 24px; min-height: 100vh; }
+    .container { max-width: 560px; margin: 0 auto; }
+    .header { text-align: center; margin-bottom: 48px; padding-bottom: 24px; border-bottom: 1px solid var(--rule); }
+    .wordmark { font-size: 14px; letter-spacing: 2px; margin-bottom: 24px; }
+    .wordmark a { text-decoration: none; color: var(--text); transition: color 0.2s; }
+    .wordmark a:hover { color: var(--accent); }
+    .module-number { font-size: 12px; letter-spacing: 1px; color: var(--text-light); text-transform: uppercase; margin-bottom: 16px; }
+    .module-title { font-size: 28px; font-weight: normal; margin-bottom: 12px; }
+    .section { margin: 48px 0; padding: 0; }
+    .section-divider { border-bottom: 1px solid var(--rule); margin: 48px 0; }
+    .teaching { font-size: 16px; line-height: 1.8; color: var(--text); }
+    .practice-label { font-size: 12px; letter-spacing: 1px; color: var(--text-light); text-transform: uppercase; margin-bottom: 16px; }
+    .practice-link { display: inline-block; text-decoration: none; color: var(--text); font-size: 16px; padding: 8px 0; border-bottom: 1px solid var(--text); transition: color 0.2s, border-color 0.2s; }
+    .practice-link:hover { color: var(--accent); border-bottom-color: var(--accent); }
+    .take-home { font-size: 16px; line-height: 1.8; font-style: italic; color: var(--text-light); }
+    .back-link { text-align: center; margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--rule); }
+    .back-link a { text-decoration: none; color: var(--text); font-size: 14px; transition: color 0.2s; }
+    .back-link a:hover { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header"><div class="wordmark"><a href="index.html">Shoshin</a></div></div>
+    <div class="module-number">Module 10</div>
+    <h1 class="module-title">From Nothingness</h1>
+    <div class="section-divider"></div>
+    <section class="section">
+      <p class="teaching">True naturalness is activity based on nothingness — something coming out of nothing like a seed from the ground. The seed has no idea of being a particular plant. When you are hungry, to eat is natural. When you are expecting too much, to eat is not natural — you have no new feeling, no appreciation. Shin ku myo u: from true emptiness, the wondrous being appears.</p>
+    </section>
+    <div class="section-divider"></div>
+    <section class="section">
+      <div class="practice-label">The Practice</div>
+      <a href="nothingness.html" class="practice-link">Begin the practice</a>
+    </section>
+    <div class="section-divider"></div>
+    <section class="section">
+      <p class="take-home">Once this week: do something completely without plan. See what emerges from nothing.</p>
+    </section>
+    <div class="back-link"><a href="index.html">Return to journey</a></div>
+  </div>
+  <script>
+    const STORAGE_KEY = 'haiku-lab-zen-progress';
+    const MODULE_NUM = 10;
+    function markAsOpened() {
+      let progress = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      if (!progress) progress = { opened: [], lastOpened: null, startedAt: new Date().toISOString() };
+      if (!progress.opened.includes(MODULE_NUM)) progress.opened.push(MODULE_NUM);
+      progress.lastOpened = MODULE_NUM;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+    }
+    markAsOpened();
+  </script>
+</body>
+</html>

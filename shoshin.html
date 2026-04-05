@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shoshin — Beginner's Mind</title>
+<style>
+  :root { --bg: #f8f6f1; --text: #1a1a1a; --text-light: #6b6860; --accent: #8b7355; --rule: #d4cfc5; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--text); min-height: 100vh; }
+  body { font-family: 'Georgia', 'Times New Roman', serif; font-size: 17px; line-height: 1.8; max-width: 560px; margin: 0 auto; padding: 48px 24px 80px; }
+  a.wordmark { font-family: system-ui, sans-serif; font-size: 13px; letter-spacing: 0.12em; color: var(--text-light); text-decoration: none; display: block; margin-bottom: 72px; }
+  a.wordmark:hover { color: var(--accent); }
+  .threshold { font-size: 22px; font-weight: normal; line-height: 1.5; margin-bottom: 64px; font-style: italic; }
+  hr { border: none; border-top: 1px solid var(--rule); margin: 48px 0; }
+  .settle { color: var(--text-light); font-size: 14px; font-family: system-ui, sans-serif; letter-spacing: 0.06em; margin-bottom: 16px; }
+  .bowl-wrap { text-align: center; margin: 32px 0 48px; }
+  .bowl { width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--rule); background: none; cursor: pointer; transition: transform 0.3s, border-color 0.3s; display: inline-block; }
+  .bowl:hover { border-color: var(--accent); }
+  .bowl.ringing { animation: ring 0.5s ease-out; }
+  @keyframes ring { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
+  .bowl-label { font-family: system-ui, sans-serif; font-size: 11px; color: var(--rule); letter-spacing: 0.08em; margin-top: 12px; }
+  .practice { display: none; }
+  .prompt { font-size: 18px; margin-bottom: 32px; line-height: 1.7; }
+  textarea { width: 100%; min-height: 120px; background: rgba(0,0,0,0.03); border: none; outline: none; resize: none; font-family: inherit; font-size: 16px; line-height: 1.8; color: var(--text); padding: 16px; }
+  textarea::placeholder { color: var(--text-light); }
+  button { display: none; background: none; border: 1px solid var(--rule); color: var(--text-light); font-family: system-ui, sans-serif; font-size: 14px; padding: 10px 20px; cursor: pointer; letter-spacing: 0.04em; }
+  button:hover { color: var(--accent); border-color: var(--accent); }
+  .share { display: none; }
+  .share-prompt { font-size: 17px; margin-bottom: 32px; line-height: 1.8; }
+  .close { display: none; color: var(--text-light); font-style: italic; font-size: 16px; }
+  .fade-in { animation: fadeIn 0.6s ease-in; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+</style>
+</head>
+<body>
+
+<a href="index.html" class="wordmark">shoshin</a>
+
+<p class="threshold">You have been here before.<br>Approach it as if you have not.</p>
+
+<hr>
+<p class="settle">Settle.</p>
+
+<div class="bowl-wrap">
+  <div class="bowl" id="bowl" role="button" aria-label="Strike the bowl"></div>
+  <p class="bowl-label">strike the bowl to begin</p>
+</div>
+
+<div class="practice fade-in" id="practice">
+  <p class="prompt">What is actually true here?<br><em>Not the story. Not the feeling.<br>What is true.</em></p>
+  <textarea id="truth" placeholder="Write here." rows="6"></textarea>
+  <button id="btn">Continue.</button>
+</div>
+
+<div class="share fade-in" id="share">
+  <hr>
+  <p class="share-prompt">Share what you wrote.<br>Not to explain it. Just to offer it.</p>
+</div>
+
+<div class="close fade-in" id="close">
+  <hr>
+  <p>In the beginner's mind there are many possibilities.<br>In the expert's mind there are few.</p>
+</div>
+
+<script>
+  // Singing bowl — Web Audio API
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  let audioCtx;
+
+  function strikesBowl() {
+    if (!audioCtx) audioCtx = new AudioCtx();
+
+    // Fundamental + overtones — a simple singing bowl
+    const freqs = [220, 440, 660, 880];
+    const gains = [0.3, 0.15, 0.08, 0.04];
+    const now = audioCtx.currentTime;
+
+    freqs.forEach((freq, i) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(gains[i], now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 8); // 8-second decay
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 8);
+    });
+  }
+
+  const bowl = document.getElementById('bowl');
+  const practice = document.getElementById('practice');
+  const truth = document.getElementById('truth');
+  const btn = document.getElementById('btn');
+  const share = document.getElementById('share');
+  const close = document.getElementById('close');
+
+  bowl.addEventListener('click', function() {
+    this.classList.add('ringing');
+    strikesBowl();
+    document.querySelector('.bowl-label').textContent = 'listen to the silence after';
+
+    // Practice appears after the bowl fades (8 seconds)
+    setTimeout(() => {
+      practice.style.display = 'block';
+      document.querySelector('.bowl-label').style.display = 'none';
+    }, 8000);
+
+    setTimeout(() => this.classList.remove('ringing'), 500);
+  });
+
+  truth.addEventListener('input', function() {
+    btn.style.display = this.value.trim().length > 10 ? 'inline-block' : 'none';
+  });
+
+  btn.addEventListener('click', function() {
+    share.style.display = 'block';
+    close.style.display = 'block';
+    btn.style.display = 'none';
+    share.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+</script>
+<div style="text-align:center;margin-top:64px;padding-top:24px;border-top:1px solid #d4cfc5;"><a href="module-01.html" style="font-family:system-ui,sans-serif;font-size:12px;letter-spacing:0.08em;color:#d4cfc5;text-decoration:none;">return to this week</a></div>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nothing Special</title>
+<style>
+  :root { --bg: #f8f6f1; --text: #1a1a1a; --text-light: #6b6860; --rule: #d4cfc5; --accent: #8b7355; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--text); min-height: 100vh; }
+  body { font-family: 'Georgia', 'Times New Roman', serif; font-size: 17px; line-height: 1.8; max-width: 560px; margin: 0 auto; padding: 48px 24px 80px; }
+  a.wordmark { font-family: system-ui, sans-serif; font-size: 13px; letter-spacing: 0.12em; color: var(--text-light); text-decoration: none; display: block; margin-bottom: 72px; }
+  a.wordmark:hover { color: var(--accent); }
+  .threshold { font-size: 22px; font-weight: normal; line-height: 1.5; font-style: italic; }
+  hr { border: none; border-top: 1px solid var(--rule); margin: 48px 0; }
+  .line { font-size: 17px; line-height: 1.8; opacity: 0; transition: opacity 2.5s; margin-bottom: 32px; }
+  .line.visible { opacity: 1; }
+  .line.faded { color: var(--text-light); }
+  .bowl-wrap { text-align: center; margin: 48px 0; opacity: 0; transition: opacity 2s; }
+  .bowl-wrap.visible { opacity: 1; }
+  .bowl { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--rule); background: none; cursor: pointer; display: inline-block; }
+  .bowl:hover { border-color: var(--accent); }
+  .bowl-label { font-family: system-ui, sans-serif; font-size: 11px; color: var(--rule); letter-spacing: 0.08em; margin-top: 12px; }
+  .after { display: none; text-align: center; }
+  .after-text { color: var(--text-light); font-style: italic; font-size: 16px; }
+  .close { color: var(--text-light); font-style: italic; font-size: 16px; opacity: 0; transition: opacity 2s; margin-top: 48px; }
+  .close.visible { opacity: 1; }
+</style>
+</head>
+<body>
+
+<a href="index.html" class="wordmark">shoshin</a>
+
+<p class="threshold">I went and I returned.<br>It was nothing special.</p>
+
+<hr>
+
+<p class="line" id="l1">Name one ordinary thing you will do today.</p>
+
+<p class="line faded" id="l2">Go and do it now.</p>
+
+<div class="bowl-wrap" id="bw">
+  <div class="bowl" id="bowl" role="button" aria-label="Strike when you return"></div>
+  <p class="bowl-label">strike when you return</p>
+</div>
+
+<div class="after" id="after">
+  <hr>
+  <p class="after-text">That was also the practice.</p>
+</div>
+
+<p class="close" id="close">The ordinary is the practice.<br>There is no special moment.</p>
+
+<script>
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  let audioCtx;
+
+  function bowlStrike() {
+    if (!audioCtx) audioCtx = new AudioCtx();
+    const now = audioCtx.currentTime;
+    [330, 660, 990].forEach((f, i) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = f;
+      gain.gain.setValueAtTime([0.2, 0.1, 0.05][i], now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 6);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 6);
+    });
+  }
+
+  // Slow reveal
+  setTimeout(() => document.getElementById('l1').classList.add('visible'), 2000);
+  setTimeout(() => document.getElementById('l2').classList.add('visible'), 6000);
+  setTimeout(() => document.getElementById('bw').classList.add('visible'), 10000);
+
+  // When they return and strike the bowl
+  document.getElementById('bowl').addEventListener('click', function() {
+    bowlStrike();
+    document.getElementById('bw').style.display = 'none';
+    document.getElementById('after').style.display = 'block';
+    setTimeout(() => document.getElementById('close').classList.add('visible'), 6000);
+  });
+</script>
+<div style="text-align:center;margin-top:64px;padding-top:24px;border-top:1px solid #d4cfc5;"><a href="module-07.html" style="font-family:system-ui,sans-serif;font-size:12px;letter-spacing:0.08em;color:#d4cfc5;text-decoration:none;">return to this week</a></div>
+</body>
+</html>

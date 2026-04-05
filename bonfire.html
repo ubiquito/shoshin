@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Bonfire</title>
+<style>
+  :root { --bg: #f8f6f1; --text: #1a1a1a; --text-light: #6b6860; --rule: #d4cfc5; --accent: #8b7355; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--text); min-height: 100vh; }
+  body { font-family: 'Georgia', 'Times New Roman', serif; font-size: 17px; line-height: 1.8; max-width: 560px; margin: 0 auto; padding: 48px 24px 80px; }
+  a.wordmark { font-family: system-ui, sans-serif; font-size: 13px; letter-spacing: 0.12em; color: var(--text-light); text-decoration: none; display: block; margin-bottom: 72px; }
+  a.wordmark:hover { color: var(--accent); }
+  .threshold { font-size: 22px; font-weight: normal; line-height: 1.5; margin-bottom: 64px; font-style: italic; }
+  hr { border: none; border-top: 1px solid var(--rule); margin: 48px 0; }
+  .prompt { font-size: 17px; margin-bottom: 24px; }
+  textarea { width: 100%; min-height: 120px; background: rgba(0,0,0,0.03); border: none; outline: none; resize: none; font-family: inherit; font-size: 16px; line-height: 1.8; color: var(--text); padding: 16px; transition: opacity 3s, filter 3s; }
+  textarea::placeholder { color: var(--text-light); }
+  button { display: none; background: none; border: 1px solid var(--rule); color: var(--text-light); font-family: system-ui, sans-serif; font-size: 14px; padding: 10px 20px; cursor: pointer; letter-spacing: 0.04em; margin-top: 16px; }
+  button:hover { color: var(--accent); border-color: var(--accent); }
+  .ash { display: none; color: var(--text-light); font-style: italic; }
+</style>
+</head>
+<body>
+
+<a href="index.html" class="wordmark">shoshin</a>
+<p class="threshold">Burn completely.<br>Leave no trace.</p>
+<hr>
+<p class="prompt">What are you still carrying?</p>
+<textarea id="t" placeholder="Write it here. All of it." rows="6"></textarea>
+<button id="b">Let it burn.</button>
+
+<div class="ash" id="ash">
+  <hr>
+  <p>Ashes do not return to firewood.</p>
+</div>
+
+<script>
+  const t = document.getElementById('t'), b = document.getElementById('b'), a = document.getElementById('ash');
+  t.addEventListener('input', () => b.style.display = t.value.trim().length > 5 ? 'inline-block' : 'none');
+  b.addEventListener('click', () => {
+    b.style.display = 'none';
+    t.style.opacity = '0';
+    t.style.filter = 'blur(4px)';
+    t.readOnly = true;
+    setTimeout(() => { t.style.display = 'none'; a.style.display = 'block'; }, 3500);
+  });
+</script>
+<div style="text-align:center;margin-top:64px;padding-top:24px;border-top:1px solid #d4cfc5;"><a href="module-05.html" style="font-family:system-ui,sans-serif;font-size:12px;letter-spacing:0.08em;color:#d4cfc5;text-decoration:none;">return to this week</a></div>
+</body>
+</html>

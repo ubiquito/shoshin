@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Sky — Shoshin</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --bg: #f8f6f1; --text: #1a1a1a; --text-light: #6b6860; --accent: #8b7355; --rule: #d4cfc5; }
+    html, body { min-height: 100%; background: var(--bg); color: var(--text); }
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      display: flex; flex-direction: column; align-items: center;
+      min-height: 100vh; padding: 0 24px;
+      transition: background-color 60s ease;
+    }
+    body.dusk { background-color: #ece8e0; }
+    body.night { background-color: #ddd8ce; }
+    body.deep { background-color: #ccc7bc; }
+    a.wordmark { margin-top: 48px; font-family: system-ui, sans-serif; font-size: 13px; letter-spacing: 0.12em; color: var(--text-light); text-decoration: none; text-transform: uppercase; }
+    a.wordmark:hover { color: var(--accent); }
+    .gate { width: 100%; max-width: 560px; height: 1px; background: var(--rule); margin-top: 24px; }
+    .container { width: 100%; max-width: 560px; text-align: center; }
+    .threshold { margin-top: 72px; font-size: 20px; line-height: 1.6; font-style: italic; text-align: left; }
+    .settle { margin-top: 48px; text-align: left; font-family: system-ui, sans-serif; font-size: 13px; color: var(--text-light); letter-spacing: 0.08em; }
+    .sky-phrase { margin-top: 80px; font-size: 24px; font-style: italic; transition: opacity 3s; }
+    .weather { margin-top: 16px; font-size: 17px; font-style: italic; color: var(--text-light); transition: opacity 3s; min-height: 28px; }
+    button { margin-top: 48px; font-family: system-ui, sans-serif; font-size: 14px; color: var(--text-light); background: none; border: 1px solid var(--rule); padding: 10px 24px; cursor: pointer; letter-spacing: 0.06em; }
+    button:hover { color: var(--accent); border-color: var(--accent); }
+    .rule { width: 100%; height: 1px; background: var(--rule); margin-top: 80px; opacity: 0; transition: opacity 2s; }
+    .close { margin-top: 40px; margin-bottom: 80px; text-align: left; font-size: 16px; font-style: italic; color: var(--text-light); line-height: 1.8; opacity: 0; transition: opacity 2s; }
+  </style>
+</head>
+<body id="body">
+  <a class="wordmark" href="index.html">Shoshin</a>
+  <div class="gate"></div>
+  <div class="container">
+    <p class="threshold">The dark empty sky is never surprised by lightning.</p>
+    <p class="settle">Settle.</p>
+    <p class="sky-phrase" id="sky">You are the sky.</p>
+    <p class="weather" id="weather"></p>
+    <button id="btn">Sit.</button>
+    <div class="rule" id="closeRule"></div>
+    <p class="close" id="close">The sky does not resist the storm. It does not ignore the storm. It is simply large enough to hold it.</p>
+  </div>
+
+<script>
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  let audioCtx;
+
+  function bowlStrike(freq, decay) {
+    if (!audioCtx) audioCtx = new AudioCtx();
+    const now = audioCtx.currentTime;
+    [freq, freq * 2, freq * 3].forEach((f, i) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = f;
+      gain.gain.setValueAtTime([0.2, 0.1, 0.05][i], now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + decay);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + decay);
+    });
+  }
+
+  const body = document.getElementById('body');
+  const sky = document.getElementById('sky');
+  const weather = document.getElementById('weather');
+
+  const conditions = [
+    '', 'This is weather.', 'A storm passes.', 'Stillness.',
+    'Lightning.', 'Rain.', 'Stillness again.', ''
+  ];
+
+  document.getElementById('btn').addEventListener('click', function() {
+    this.style.display = 'none';
+    bowlStrike(196, 6); // opening bowl
+
+    // The sky stays. The conditions change around you.
+    let i = 0;
+    setTimeout(() => body.classList.add('dusk'), 5000);
+    setTimeout(() => body.classList.add('night'), 60000);
+    setTimeout(() => body.classList.add('deep'), 120000);
+
+    const cycle = setInterval(() => {
+      i++;
+      if (i >= conditions.length) {
+        clearInterval(cycle);
+        // Final bowl strike — then closing
+        bowlStrike(262, 10);
+        setTimeout(() => {
+          document.getElementById('closeRule').style.opacity = '1';
+          setTimeout(() => document.getElementById('close').style.opacity = '1', 800);
+        }, 6000);
+        return;
+      }
+      weather.style.opacity = '0';
+      setTimeout(() => {
+        weather.textContent = conditions[i];
+        weather.style.opacity = '1';
+        // Lightning gets a sharp, bright sound
+        if (conditions[i] === 'Lightning.') bowlStrike(523, 3);
+      }, 3000);
+    }, 25000); // ~3.5 minutes total
+  });
+</script>
+<div style="text-align:center;margin-top:64px;padding-top:24px;border-top:1px solid #d4cfc5;"><a href="module-12.html" style="font-family:system-ui,sans-serif;font-size:12px;letter-spacing:0.08em;color:#d4cfc5;text-decoration:none;">return to this week</a></div>
+</body>
+</html>

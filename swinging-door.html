@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Swinging Door — Shoshin</title>
+  <meta name="theme-color" content="#f8f6f1">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #f8f6f1; --text: #1a1a1a; --text-light: #6b6860;
+      --accent: #8b7355; --rule: #d4cfc5;
+    }
+    html, body { height: 100%; background: var(--bg); color: var(--text); }
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      display: flex; flex-direction: column; align-items: center;
+      min-height: 100vh; padding: 0 24px;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wordmark {
+      margin-top: 48px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      font-size: 13px; letter-spacing: 0.12em; color: var(--text-light);
+      text-decoration: none; text-transform: uppercase;
+    }
+    .wordmark:hover { color: var(--accent); }
+    .gate { width: 100%; max-width: 560px; height: 1px; background: var(--rule); margin-top: 24px; }
+    .container { width: 100%; max-width: 560px; }
+    .threshold {
+      margin-top: 72px; font-size: 20px; line-height: 1.6;
+      font-style: italic; color: var(--text);
+    }
+    .settle {
+      margin-top: 56px; font-size: 13px; color: var(--text-light);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      letter-spacing: 0.08em;
+    }
+    .circle-wrap {
+      margin-top: 64px; display: flex; flex-direction: column;
+      align-items: center; gap: 32px;
+    }
+    .circle-stage {
+      width: 160px; height: 160px; display: flex;
+      align-items: center; justify-content: center;
+    }
+    .circle {
+      width: 80px; height: 80px; border-radius: 50%;
+      border: 1px solid var(--accent);
+      opacity: 0.7;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .begin-btn {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      font-size: 14px; color: var(--text-light); background: none;
+      border: 1px solid var(--rule); padding: 10px 24px;
+      cursor: pointer; letter-spacing: 0.06em;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .begin-btn:hover { color: var(--accent); border-color: var(--accent); }
+    .begin-btn.hidden { display: none; }
+    .instruction {
+      font-size: 16px; line-height: 1.9; color: var(--text-light);
+      text-align: center; min-height: 28px; opacity: 0;
+      transition: opacity 0.6s ease;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      font-size: 13px; letter-spacing: 0.04em;
+    }
+    .instruction.visible { opacity: 1; }
+    .rule { width: 100%; height: 1px; background: var(--rule); margin-top: 80px; }
+    .close-line {
+      margin-top: 40px; margin-bottom: 80px;
+      font-size: 16px; font-style: italic; color: var(--text-light);
+      line-height: 1.8; opacity: 0; transition: opacity 1.2s ease;
+    }
+    .close-line.visible { opacity: 1; }
+  </style>
+</head>
+<body>
+
+  <a class="wordmark" href="index.html">Shoshin</a>
+  <div class="gate"></div>
+
+  <div class="container">
+    <p class="threshold">The breath is already happening.</p>
+
+    <p class="settle">Settle.</p>
+
+    <div class="circle-wrap">
+      <div class="circle-stage">
+        <div class="circle" id="circle"></div>
+      </div>
+      <div class="instruction" id="instruction"></div>
+      <button class="begin-btn" id="beginBtn" onclick="begin()">Begin.</button>
+    </div>
+
+    <div class="rule" id="closeRule" style="opacity:0;transition:opacity 1.2s ease;"></div>
+    <p class="close-line" id="closeLine">The "I" is extra.</p>
+  </div>
+
+  <script>
+    const circle = document.getElementById('circle');
+    const btn = document.getElementById('beginBtn');
+    const instr = document.getElementById('instruction');
+    const closeRule = document.getElementById('closeRule');
+    const closeLine = document.getElementById('closeLine');
+
+    // 3-7-8 breath: inhale 3s, hold 7s, exhale 8s = 18s cycle
+    const INHALE = 3000, HOLD = 7000, EXHALE = 8000;
+    const CYCLE = INHALE + HOLD + EXHALE;
+    let breathing = false;
+    let cycles = 0;
+
+    function begin() {
+      btn.classList.add('hidden');
+      breathing = true;
+      breathCycle();
+    }
+
+    function breathCycle() {
+      if (!breathing) return;
+      cycles++;
+
+      // Inhale — expand
+      circle.style.transition = `transform ${INHALE}ms ease-in, opacity ${INHALE}ms ease-in`;
+      circle.style.transform = 'scale(1.4)';
+      circle.style.opacity = '0.9';
+
+      setTimeout(() => {
+        // Hold — still
+        circle.style.transition = 'none';
+      }, INHALE);
+
+      setTimeout(() => {
+        // Exhale — contract
+        circle.style.transition = `transform ${EXHALE}ms ease-out, opacity ${EXHALE}ms ease-out`;
+        circle.style.transform = 'scale(0.6)';
+        circle.style.opacity = '0.4';
+      }, INHALE + HOLD);
+
+      setTimeout(() => {
+        if (cycles >= 7) { // ~2 minutes (7 x 18s)
+          showClose();
+        } else {
+          breathCycle();
+        }
+      }, CYCLE);
+    }
+
+    function showClose() {
+      breathing = false;
+      circle.style.transition = 'opacity 2s';
+      circle.style.opacity = '0.2';
+      closeRule.style.opacity = '1';
+      setTimeout(() => closeLine.classList.add('visible'), 800);
+    }
+
+    // Allow manual end by clicking the circle
+    circle.parentElement.addEventListener('click', function() {
+      if (breathing && cycles >= 3) showClose();
+    });
+  </script>
+<div style="text-align:center;margin-top:64px;padding-top:24px;border-top:1px solid #d4cfc5;"><a href="module-02.html" style="font-family:system-ui,sans-serif;font-size:12px;letter-spacing:0.08em;color:#d4cfc5;text-decoration:none;">return to this week</a></div>
+</body>
+</html>

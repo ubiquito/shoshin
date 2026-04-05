@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Communication as Zazen</title>
+<style>
+  :root {
+    --bg: #f8f6f1;
+    --text: #1a1a1a;
+    --text-light: #6b6860;
+    --accent: #8b7355;
+    --rule: #d4cfc5;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--text); min-height: 100vh; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: 17px;
+    line-height: 1.8;
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+  .wordmark {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    color: var(--text-light);
+    text-decoration: none;
+    text-transform: lowercase;
+    display: block;
+    margin-bottom: 72px;
+  }
+  .wordmark:hover { color: var(--accent); }
+  .threshold {
+    font-size: 22px;
+    font-weight: normal;
+    line-height: 1.5;
+    margin-bottom: 64px;
+    font-style: italic;
+  }
+  hr {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 48px 0;
+  }
+  .settle {
+    color: var(--text-light);
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    letter-spacing: 0.06em;
+    margin-bottom: 48px;
+  }
+  .instruction {
+    font-size: 18px;
+    line-height: 1.8;
+    margin-bottom: 48px;
+  }
+  .instruction em {
+    display: block;
+    color: var(--text-light);
+    font-size: 16px;
+    margin-top: 12px;
+  }
+  .begin-btn {
+    background: none;
+    border: 1px solid var(--rule);
+    color: var(--text-light);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    font-size: 14px;
+    padding: 10px 20px;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    margin-bottom: 48px;
+  }
+  .begin-btn:hover { color: var(--accent); border-color: var(--accent); }
+  .sitting { display: none; }
+  .sitting-text {
+    font-size: 18px;
+    line-height: 1.9;
+    margin-bottom: 48px;
+  }
+  .sitting-text p { margin-bottom: 24px; }
+  .offer-prompt {
+    font-size: 17px;
+    margin-bottom: 32px;
+    color: var(--text-light);
+    font-style: italic;
+  }
+  textarea {
+    width: 100%;
+    min-height: 90px;
+    background: rgba(0,0,0,0.03);
+    border: none;
+    outline: none;
+    resize: none;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--text);
+    padding: 16px;
+    margin-bottom: 32px;
+  }
+  textarea::placeholder { color: var(--text-light); }
+  .silence-note {
+    font-size: 15px;
+    color: var(--text-light);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    margin-bottom: 48px;
+  }
+  .close {
+    margin-top: 32px;
+    color: var(--text-light);
+    font-style: italic;
+    font-size: 16px;
+  }
+  .fade-in { animation: fadeIn 0.4s ease-in; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+</style>
+</head>
+<body>
+
+<a href="index.html" class="wordmark">shoshin</a>
+
+<p class="threshold">The best way to communicate<br>may be just to sit<br>without saying anything.</p>
+
+<hr>
+<p class="settle">Sit with this person.<br>Both of you.</p>
+
+<div class="instruction">
+  Bring someone.<br>
+  Sit together.<br>
+  <em>This practice is for both of you.</em>
+</div>
+
+<button class="begin-btn" id="begin-btn">Begin.</button>
+
+<div class="sitting fade-in" id="sitting">
+  <div class="sitting-text">
+    <p>Listen without preparing a response.<br>
+    No echo. No response forming.<br>
+    Just receive what is here.</p>
+
+    <p>When you are ready —<br>
+    speak one true thing.<br>
+    Or do not speak.<br>
+    Both are practice.</p>
+  </div>
+
+  <hr>
+
+  <p class="offer-prompt">When you are ready, each of you may write one thing.</p>
+
+  <textarea placeholder="First person — one true thing." rows="3"></textarea>
+  <textarea placeholder="Second person — one true thing." rows="3"></textarea>
+
+  <p class="silence-note">Or leave these empty. Silence is also an answer.</p>
+
+  <div class="close">
+    <hr>
+    <p>Just watch.<br>That is enough.</p>
+  </div>
+</div>
+
+<script>
+  document.getElementById('begin-btn').addEventListener('click', function() {
+    document.getElementById('sitting').style.display = 'block';
+    this.style.display = 'none';
+    setTimeout(() => {
+      document.getElementById('sitting').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
+    // progress tracked by module page, not here
+  });
+</script>
+<div style="text-align:center;margin-top:64px;padding-top:24px;border-top:1px solid #d4cfc5;"><a href="module-08.html" style="font-family:system-ui,sans-serif;font-size:12px;letter-spacing:0.08em;color:#d4cfc5;text-decoration:none;">return to this week</a></div>
+</body>
+</html>

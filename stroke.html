@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>One Stroke — Shoshin</title>
+<style>
+  :root { --bg: #f8f6f1; --text: #1a1a1a; --text-light: #6b6860; --rule: #d4cfc5; --accent: #8b7355; --ink: #2a2520; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--text); min-height: 100vh; }
+  body { font-family: 'Georgia', 'Times New Roman', serif; font-size: 17px; line-height: 1.8; display: flex; flex-direction: column; align-items: center; padding: 0 24px; }
+  a.wordmark { margin-top: 48px; font-family: system-ui, sans-serif; font-size: 13px; letter-spacing: 0.12em; color: var(--text-light); text-decoration: none; }
+  a.wordmark:hover { color: var(--accent); }
+  .gate { width: 100%; max-width: 560px; height: 1px; background: var(--rule); margin-top: 24px; }
+  .container { width: 100%; max-width: 560px; }
+
+  .threshold { margin-top: 48px; font-size: 18px; line-height: 1.6; font-style: italic; }
+  .teaching { margin-top: 32px; font-size: 15px; line-height: 1.9; color: var(--text-light); }
+
+  /* The canvas */
+  .canvas-wrap { margin-top: 48px; position: relative; }
+  canvas {
+    width: 100%; height: 400px; display: block;
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    cursor: crosshair;
+    touch-action: none;
+  }
+
+  /* Element indicator */
+  .element {
+    margin-top: 16px; text-align: center;
+    font-family: system-ui, sans-serif; font-size: 12px;
+    letter-spacing: 0.12em; color: var(--text-light);
+    min-height: 20px;
+  }
+
+  /* Controls */
+  .controls {
+    margin-top: 24px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+  }
+  .controls button {
+    background: none; border: 1px solid var(--rule); color: var(--text-light);
+    font-family: system-ui, sans-serif; font-size: 12px; padding: 6px 14px;
+    cursor: pointer; letter-spacing: 0.04em;
+  }
+  .controls button:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* Teaching below */
+  hr { border: none; border-top: 1px solid var(--rule); margin: 48px 0; width: 100%; }
+  .elements-teaching { font-size: 15px; line-height: 2; color: var(--text-light); }
+  .elements-teaching dt { color: var(--text); font-style: italic; display: inline; }
+  .elements-teaching dd { display: inline; margin: 0; }
+  .elements-teaching .row { margin-bottom: 12px; }
+  .forms { margin-top: 32px; font-size: 14px; color: var(--text-light); }
+  .close { margin: 48px 0 80px; font-style: italic; color: var(--text-light); font-size: 16px; }
+</style>
+</head>
+<body>
+
+<a href="index.html" class="wordmark">shoshin</a>
+<div class="gate"></div>
+
+<div class="container">
+  <p class="threshold">One stroke.</p>
+  <p class="teaching">
+    A stroke has a beginning and an end. Between them, it carries energy.
+    The brush does not hesitate. It does not plan. It moves — and in its movement,
+    one of five qualities appears.
+  </p>
+
+  <div class="canvas-wrap">
+    <canvas id="canvas" width="560" height="400"></canvas>
+  </div>
+  <p class="element" id="element"></p>
+
+  <div class="controls">
+    <button onclick="clear_canvas()">Clear</button>
+  </div>
+
+  <hr>
+
+  <div class="elements-teaching">
+    <div class="row"><dt>Earth — </dt><dd>heavy, grounded, slow. The stroke presses into the paper. Horizontal. Stable.</dd></div>
+    <div class="row"><dt>Water — </dt><dd>flowing, continuous, yielding. The stroke moves without breaking. Curves. No sharp edges.</dd></div>
+    <div class="row"><dt>Fire — </dt><dd>ascending, quick, tapering. The stroke rises and thins. Vertical. Decisive.</dd></div>
+    <div class="row"><dt>Wind — </dt><dd>light, sweeping, unpredictable. The stroke lifts from the surface. Diagonal. Free.</dd></div>
+    <div class="row"><dt>Sky — </dt><dd>the space the stroke moves through. What is not drawn is also the calligraphy.</dd></div>
+  </div>
+
+  <p class="forms">
+    Traditional forms to practice: the circle (ensō), bamboo (竹), the horizontal stroke (一),
+    the mountain (山), the dot (丶). Each contains all five elements.
+    Begin with one stroke. That is enough.
+  </p>
+
+  <p class="close">
+    Make one stroke with full attention.<br>
+    Do not evaluate. Make another.<br>
+    Each is complete.
+  </p>
+</div>
+
+<script>
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  const elDisplay = document.getElementById('element');
+
+  // High-DPI support
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  ctx.scale(dpr, dpr);
+
+  let drawing = false;
+  let points = [];
+  let strokes = [];
+
+  // Ink style
+  function setInk(pressure) {
+    ctx.strokeStyle = `rgba(42, 37, 32, ${0.6 + pressure * 0.4})`;
+    ctx.lineWidth = 1.5 + pressure * 4;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+  }
+
+  function getPos(e) {
+    const r = canvas.getBoundingClientRect();
+    const touch = e.touches ? e.touches[0] : e;
+    return {
+      x: touch.clientX - r.left,
+      y: touch.clientY - r.top,
+      t: Date.now(),
+      pressure: e.pressure || 0.5
+    };
+  }
+
+  function startStroke(e) {
+    e.preventDefault();
+    drawing = true;
+    points = [getPos(e)];
+    ctx.beginPath();
+    const p = points[0];
+    setInk(p.pressure);
+    ctx.moveTo(p.x, p.y);
+  }
+
+  function moveStroke(e) {
+    if (!drawing) return;
+    e.preventDefault();
+    const p = getPos(e);
+    points.push(p);
+
+    // Vary line width with speed
+    if (points.length > 1) {
+      const prev = points[points.length - 2];
+      const dx = p.x - prev.x;
+      const dy = p.y - prev.y;
+      const dt = Math.max(p.t - prev.t, 1);
+      const speed = Math.sqrt(dx * dx + dy * dy) / dt;
+      const pressure = Math.max(0.2, Math.min(1, 1 - speed * 0.15));
+      setInk(pressure);
+    }
+
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+  }
+
+  function endStroke(e) {
+    if (!drawing) return;
+    drawing = false;
+    if (points.length > 2) {
+      strokes.push([...points]);
+      readElement(points);
+    }
+  }
+
+  // Detect the element from the stroke's character
+  function readElement(pts) {
+    if (pts.length < 3) return;
+
+    const first = pts[0], last = pts[pts.length - 1];
+    const dx = last.x - first.x;
+    const dy = last.y - first.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    const duration = last.t - first.t;
+    const speed = dist / Math.max(duration, 1);
+    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+
+    // Curvature — how much the stroke deviates from a straight line
+    let maxDev = 0;
+    for (const p of pts) {
+      const t = ((p.x - first.x) * dx + (p.y - first.y) * dy) / (dist * dist || 1);
+      const projX = first.x + t * dx;
+      const projY = first.y + t * dy;
+      const dev = Math.sqrt((p.x - projX) ** 2 + (p.y - projY) ** 2);
+      if (dev > maxDev) maxDev = dev;
+    }
+
+    // Is it a circle? (end near start, significant curvature)
+    const closed = Math.sqrt((last.x - first.x) ** 2 + (last.y - first.y) ** 2) < 40;
+
+    let element;
+
+    if (closed && maxDev > 30) {
+      element = 'ensō — the circle contains all five';
+    } else if (Math.abs(angle) < 25 && maxDev / dist < 0.15) {
+      element = 'earth — heavy, grounded, horizontal';
+    } else if (angle < -50 && speed > 0.4) {
+      element = 'fire — ascending, decisive';
+    } else if (maxDev / dist > 0.25) {
+      element = 'water — flowing, yielding';
+    } else if (speed > 0.6 || (Math.abs(angle) > 30 && Math.abs(angle) < 70)) {
+      element = 'wind — light, sweeping';
+    } else if (angle > 50) {
+      element = 'earth — descending, grounding';
+    } else {
+      element = 'sky — the space around the stroke';
+    }
+
+    elDisplay.textContent = element;
+    setTimeout(() => { elDisplay.style.opacity = '0.5'; }, 3000);
+    elDisplay.style.opacity = '1';
+  }
+
+  function clear_canvas() {
+    ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+    strokes = [];
+    elDisplay.textContent = '';
+  }
+
+  // Event listeners
+  canvas.addEventListener('mousedown', startStroke);
+  canvas.addEventListener('mousemove', moveStroke);
+  canvas.addEventListener('mouseup', endStroke);
+  canvas.addEventListener('mouseleave', endStroke);
+  canvas.addEventListener('touchstart', startStroke, { passive: false });
+  canvas.addEventListener('touchmove', moveStroke, { passive: false });
+  canvas.addEventListener('touchend', endStroke);
+</script>
+
+<div style="text-align:center;margin-top:64px;padding-top:24px;border-top:1px solid #d4cfc5;">
+  <a href="index.html" style="font-family:system-ui,sans-serif;font-size:12px;letter-spacing:0.08em;color:#d4cfc5;text-decoration:none;">return to journey</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+	"name": "Shoshin",
+	"image": "mcr.microsoft.com/devcontainers/base:bullseye",
+	"features": {
+		"ghcr.io/devcontainers/features/github-cli:1": {}
+	},
+	"forwardPorts": [8080],
+	"postCreateCommand": "bash dev-init.sh"
+}

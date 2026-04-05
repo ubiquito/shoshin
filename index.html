@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A twelve-week practice in beginner's mind. Twelve tools drawn from the Zen tradition. A frame, not guidance. Free, private, nothing leaves your device.">
+  <meta property="og:title" content="Shoshin — A Practice in Beginner's Mind">
+  <meta property="og:description" content="Twelve tools drawn from the Zen tradition. For those who already understand. A frame, not guidance. Free, private, nothing leaves your device.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#f8f6f1">
+  <title>Shoshin — A Practice in Beginner's Mind</title>
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #f8f6f1;
+      --text: #1a1a1a;
+      --text-light: #6b6860;
+      --accent: #8b7355;
+      --rule: #d4cfc5;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Georgia', 'Times New Roman', serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 0 24px;
+    }
+
+    /* ── GATE ── the thin line at the top */
+    .gate {
+      width: 100%;
+      max-width: 560px;
+      height: 1px;
+      background: var(--rule);
+      margin-top: 80px;
+    }
+
+    /* ── HEADER ── */
+    header {
+      width: 100%;
+      max-width: 560px;
+      text-align: center;
+      padding: 64px 0 56px;
+    }
+
+    .kanji {
+      font-size: 13px;
+      letter-spacing: 0.25em;
+      color: var(--text-light);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+
+    h1 {
+      font-size: clamp(52px, 8vw, 80px);
+      font-weight: normal;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 24px;
+    }
+
+    .subtitle {
+      font-size: 18px;
+      color: var(--text-light);
+      font-style: italic;
+      line-height: 1.7;
+      font-weight: normal;
+    }
+
+    /* ── RULE ── */
+    .rule {
+      width: 100%;
+      max-width: 560px;
+      height: 1px;
+      background: var(--rule);
+    }
+
+    /* ── BREATH INDICATOR ── minimal circle, slow expansion */
+    .breath-wrap {
+      padding: 64px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .breath-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--accent);
+      animation: breathe 6s ease-in-out infinite;
+      opacity: 0.6;
+    }
+
+    @keyframes breathe {
+      0%   { transform: scale(1);    opacity: 0.4; }
+      50%  { transform: scale(1.8);  opacity: 0.7; }
+      100% { transform: scale(1);    opacity: 0.4; }
+    }
+
+    /* ── TEACHINGS ── */
+    .teachings {
+      width: 100%;
+      max-width: 560px;
+      padding: 0 0 16px;
+    }
+
+    .teachings-label {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: 32px;
+    }
+
+    .module-list {
+      list-style: none;
+    }
+
+    .module-list li {
+      display: flex;
+      align-items: baseline;
+      gap: 20px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--rule);
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .module-list li:first-child {
+      border-top: 1px solid var(--rule);
+    }
+
+    .module-list li:hover .module-name {
+      color: var(--accent);
+    }
+
+    .module-num {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      font-size: 12px;
+      color: var(--text-light);
+      min-width: 24px;
+    }
+
+    .module-name {
+      font-size: 17px;
+      color: var(--text);
+      flex: 1;
+      transition: color 0.2s;
+    }
+
+    .module-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0;
+      transition: opacity 0.3s;
+      flex-shrink: 0;
+      margin-bottom: 1px;
+    }
+
+    .module-dot.opened {
+      opacity: 1;
+    }
+
+    /* ── QUOTE ── */
+    .quote-section {
+      width: 100%;
+      max-width: 560px;
+      padding: 72px 0 56px;
+      text-align: center;
+    }
+
+    blockquote {
+      font-size: 19px;
+      line-height: 1.8;
+      color: var(--text-light);
+      font-style: italic;
+      font-weight: normal;
+    }
+
+    blockquote cite {
+      display: block;
+      margin-top: 20px;
+      font-size: 13px;
+      font-style: normal;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--rule);
+    }
+
+    /* ── FOR WHOM ── */
+    .for-whom {
+      width: 100%;
+      max-width: 560px;
+      padding: 0 0 64px;
+    }
+
+    .for-whom p {
+      font-size: 16px;
+      line-height: 1.9;
+      color: var(--text-light);
+      margin-bottom: 20px;
+    }
+
+    .for-whom p:last-child {
+      margin-bottom: 0;
+    }
+
+    .for-whom strong {
+      color: var(--text);
+      font-weight: normal;
+      font-style: italic;
+    }
+
+    /* ── BEGIN ── */
+    .begin-section {
+      width: 100%;
+      max-width: 560px;
+      padding: 56px 0 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .begin-line {
+      font-size: 15px;
+      color: var(--text-light);
+      font-style: italic;
+    }
+
+    .begin-btn {
+      display: inline-block;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      font-size: 14px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text);
+      text-decoration: none;
+      border: 1px solid var(--text);
+      padding: 14px 36px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .begin-btn:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      width: 100%;
+      max-width: 560px;
+      padding: 0 0 60px;
+      text-align: center;
+    }
+
+    footer p {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      font-size: 12px;
+      color: var(--rule);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── FADE IN ── page arrives slowly */
+    body {
+      opacity: 0;
+      animation: arrive 1.2s ease-out 0.2s forwards;
+    }
+
+    @keyframes arrive {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="gate"></div>
+
+  <header>
+    <p class="kanji">初心 — Shoshin</p>
+    <h1>Beginner's<br>Mind</h1>
+    <p class="subtitle">Twelve practices drawn from the Zen tradition.<br>For those who already understand.</p>
+  </header>
+
+  <div class="rule"></div>
+
+  <div class="breath-wrap" aria-hidden="true">
+    <div class="breath-circle"></div>
+  </div>
+
+  <div class="rule"></div>
+
+  <section class="teachings" aria-label="Programme modules">
+    <p class="teachings-label">The Programme</p>
+    <ol class="module-list" id="moduleList">
+      <li data-module="1" onclick="openModule(1)">
+        <span class="module-num">1</span>
+        <span class="module-name">Beginner's Mind</span>
+        <span class="module-dot" id="dot-1"></span>
+      </li>
+      <li data-module="2" onclick="openModule(2)">
+        <span class="module-num">2</span>
+        <span class="module-name">The Swinging Door</span>
+        <span class="module-dot" id="dot-2"></span>
+      </li>
+      <li data-module="3" onclick="openModule(3)">
+        <span class="module-num">3</span>
+        <span class="module-name">The Body Knows</span>
+        <span class="module-dot" id="dot-3"></span>
+      </li>
+      <li data-module="4" onclick="openModule(4)">
+        <span class="module-num">4</span>
+        <span class="module-name">Mind Weeds</span>
+        <span class="module-dot" id="dot-4"></span>
+      </li>
+      <li data-module="5" onclick="openModule(5)">
+        <span class="module-num">5</span>
+        <span class="module-name">The Bonfire</span>
+        <span class="module-dot" id="dot-5"></span>
+      </li>
+      <li data-module="6" onclick="openModule(6)">
+        <span class="module-num">6</span>
+        <span class="module-name">The Wide Meadow</span>
+        <span class="module-dot" id="dot-6"></span>
+      </li>
+      <li data-module="7" onclick="openModule(7)">
+        <span class="module-num">7</span>
+        <span class="module-name">Nothing Special</span>
+        <span class="module-dot" id="dot-7"></span>
+      </li>
+      <li data-module="8" onclick="openModule(8)">
+        <span class="module-num">8</span>
+        <span class="module-name">Listening Without Echo</span>
+        <span class="module-dot" id="dot-8"></span>
+      </li>
+      <li data-module="9" onclick="openModule(9)">
+        <span class="module-num">9</span>
+        <span class="module-name">One River</span>
+        <span class="module-dot" id="dot-9"></span>
+      </li>
+      <li data-module="10" onclick="openModule(10)">
+        <span class="module-num">10</span>
+        <span class="module-name">From Nothingness</span>
+        <span class="module-dot" id="dot-10"></span>
+      </li>
+      <li data-module="11" onclick="openModule(11)">
+        <span class="module-num">11</span>
+        <span class="module-name">The Dark Empty Sky</span>
+        <span class="module-dot" id="dot-11"></span>
+      </li>
+      <li data-module="12" onclick="openModule(12)">
+        <span class="module-num">12</span>
+        <span class="module-name">Continue</span>
+        <span class="module-dot" id="dot-12"></span>
+      </li>
+    </ol>
+  </section>
+
+  <div class="rule"></div>
+
+  <div class="quote-section">
+    <blockquote>
+      "In the beginner's mind there are many possibilities,<br>
+      but in the expert's mind there are few."
+      <cite>Shunryu Suzuki</cite>
+    </blockquote>
+  </div>
+
+  <div class="rule"></div>
+
+  <section class="for-whom">
+    <p>
+      This is not for people who need to be told how to practice.<br>
+      It is for people who already know, and want to go deeper.
+    </p>
+    <p>
+      These tools do not explain. They do not encourage. They do not measure your progress
+      or celebrate your completion. They offer a frame — and then they get out of the way.
+    </p>
+    <p>
+      <strong>Can you stay present with what is?</strong>
+    </p>
+  </section>
+
+  <div class="rule"></div>
+
+  <div class="begin-section">
+    <p class="begin-line">Begin when you are ready.</p>
+    <a href="#moduleList" class="begin-btn" onclick="scrollToModules(event)">Begin.</a>
+  </div>
+
+  <div class="rule"></div>
+
+  <section class="for-whom" style="text-align: center;">
+    <p style="font-size: 14px; color: var(--text-light); margin-bottom: 20px;">Other practices</p>
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 320px; margin: 0 auto;">
+      <a href="../breath-anchor/landing.html" style="color: var(--text-light); font-size: 15px; text-decoration: none; border-bottom: 1px solid var(--rule); padding-bottom: 12px;">Breath Anchor <span style="font-size: 13px; opacity: 0.7;">— return to presence in a single breath</span></a>
+      <a href="../body-awareness/landing.html" style="color: var(--text-light); font-size: 15px; text-decoration: none; border-bottom: 1px solid var(--rule); padding-bottom: 12px;">Body Awareness <span style="font-size: 13px; opacity: 0.7;">— read what the body knows before the mind does</span></a>
+      <a href="../noticing-ordinary/landing.html" style="color: var(--text-light); font-size: 15px; text-decoration: none; padding-bottom: 12px;">Noticing the Ordinary <span style="font-size: 13px; opacity: 0.7;">— attend to what's already here</span></a>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <footer>
+    <p>Nothing leaves your device. &nbsp;·&nbsp; Haiku Lab &nbsp;·&nbsp; All tools free.</p>
+  </footer>
+
+  <script>
+    // ── Progress state ──────────────────────────────────────────────────────
+    const STORAGE_KEY = 'haiku-lab-zen-progress';
+
+    function getProgress() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return { opened: [], startedAt: null };
+        return JSON.parse(raw);
+      } catch {
+        return { opened: [], startedAt: null };
+      }
+    }
+
+    function saveProgress(progress) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+      } catch {}
+    }
+
+    function markOpened(n) {
+      const p = getProgress();
+      if (!p.opened.includes(n)) {
+        p.opened.push(n);
+        if (!p.startedAt) p.startedAt = new Date().toISOString().split('T')[0];
+        saveProgress(p);
+      }
+    }
+
+    // ── Render dots ──────────────────────────────────────────────────────────
+    function renderDots() {
+      const { opened } = getProgress();
+      opened.forEach(n => {
+        const dot = document.getElementById('dot-' + n);
+        if (dot) dot.classList.add('opened');
+      });
+    }
+
+    // ── Module routing ───────────────────────────────────────────────────────
+    // Module pages will live at /zen/module-1/ etc.
+    // For now: mark opened and navigate (placeholder URLs).
+    function openModule(n) {
+      markOpened(n);
+      renderDots();
+      // Navigate to module page — path to be confirmed on deploy
+      window.location.href = 'module-' + String(n).padStart(2, '0') + '.html';
+    }
+
+    // ── Begin button ────────────────────────────────────────────────────────
+    function scrollToModules(e) {
+      e.preventDefault();
+      document.getElementById('moduleList').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // ── Init ─────────────────────────────────────────────────────────────────
+    renderDots();
+  </script>
+
+</body>
+</html>

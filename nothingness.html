@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Nothingness</title>
+<style>
+  :root { --bg: #f8f6f1; --text: #1a1a1a; --text-light: #6b6860; --rule: #d4cfc5; --accent: #8b7355; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--text); min-height: 100vh; }
+  body { font-family: 'Georgia', 'Times New Roman', serif; font-size: 17px; line-height: 1.8; max-width: 560px; margin: 0 auto; padding: 48px 24px 80px; }
+  a.wordmark { font-family: system-ui, sans-serif; font-size: 13px; letter-spacing: 0.12em; color: var(--text-light); text-decoration: none; display: block; margin-bottom: 72px; }
+  a.wordmark:hover { color: var(--accent); }
+  .threshold { font-size: 22px; font-weight: normal; line-height: 1.5; font-style: italic; }
+  hr { border: none; border-top: 1px solid var(--rule); margin: 48px 0; }
+  .instruction { color: var(--text-light); font-family: system-ui, sans-serif; font-size: 14px; letter-spacing: 0.06em; }
+  button { background: none; border: 1px solid var(--rule); color: var(--text-light); font-family: system-ui, sans-serif; font-size: 14px; padding: 10px 24px; cursor: pointer; letter-spacing: 0.04em; margin-top: 32px; }
+  button:hover { color: var(--accent); border-color: var(--accent); }
+  .space { min-height: 120px; }
+  .emerge { opacity: 0; transition: opacity 4s; }
+  .emerge.visible { opacity: 1; }
+  textarea { width: 100%; min-height: 80px; background: rgba(0,0,0,0.03); border: none; outline: none; resize: none; font-family: inherit; font-size: 16px; line-height: 1.8; color: var(--text); padding: 16px; margin-top: 24px; }
+  textarea::placeholder { color: var(--text-light); }
+  .close { color: var(--text-light); font-style: italic; font-size: 16px; margin-top: 48px; opacity: 0; transition: opacity 3s; }
+  .close.visible { opacity: 1; }
+</style>
+</head>
+<body>
+
+<a href="index.html" class="wordmark">shoshin</a>
+
+<p class="threshold">The seed has no idea of being<br>a particular plant.</p>
+
+<hr>
+
+<p class="instruction">Sit in silence. Do not scroll.</p>
+
+<button id="btn">Enter the silence.</button>
+
+<div class="space"></div>
+
+<div class="emerge" id="emerge">
+  <p>What needs to be said?<br>Don't plan it. Let it arise.</p>
+  <textarea id="speak" placeholder="Speak it once."></textarea>
+</div>
+
+<p class="close" id="close">From true emptiness,<br>the wondrous being appears.</p>
+
+<script>
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  let audioCtx;
+
+  // A single tone that emerges from nothing — very slowly
+  function toneFromNothing() {
+    if (!audioCtx) audioCtx = new AudioCtx();
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = 174; // low, grounding
+    gain.gain.setValueAtTime(0, now);
+    // 15 seconds of silence, then the tone rises over 10 seconds
+    gain.gain.setValueAtTime(0, now + 15);
+    gain.gain.linearRampToValueAtTime(0.12, now + 25);
+    gain.gain.linearRampToValueAtTime(0.12, now + 28);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 35);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 35);
+  }
+
+  document.getElementById('btn').addEventListener('click', function() {
+    this.style.display = 'none';
+    toneFromNothing();
+
+    // 25 seconds of nothing. Then the prompt emerges.
+    setTimeout(() => {
+      document.getElementById('emerge').classList.add('visible');
+    }, 25000);
+  });
+
+  document.getElementById('speak').addEventListener('input', function() {
+    if (this.value.trim().length > 5) {
+      document.getElementById('close').classList.add('visible');
+    }
+  });
+</script>
+<div style="text-align:center;margin-top:64px;padding-top:24px;border-top:1px solid #d4cfc5;"><a href="module-10.html" style="font-family:system-ui,sans-serif;font-size:12px;letter-spacing:0.08em;color:#d4cfc5;text-decoration:none;">return to this week</a></div>
+</body>
+</html>
