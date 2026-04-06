@@ -29,6 +29,12 @@ else
   echo "  Node.js installed: $(node --version)"
 fi
 
+if ! grep -q '.bun/bin' ~/.bashrc 2>/dev/null; then
+  echo '' >> ~/.bashrc
+  echo 'export BUN_INSTALL="$HOME/.bun"' >> ~/.bashrc
+  echo 'export PATH="$BUN_INSTALL/bin:$PATH"' >> ~/.bashrc
+fi
+
 if [ -x "$HOME/.local/share/fnm/fnm" ] && ! grep -q "fnm env" ~/.bashrc 2>/dev/null; then
   echo '' >> ~/.bashrc
   echo 'export PATH="$HOME/.local/share/fnm:$PATH"' >> ~/.bashrc
