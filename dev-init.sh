@@ -2,12 +2,13 @@
 set -euo pipefail
 
 echo "Setting up Shoshin dev environment..."
+echo ""
 
 export BUN_INSTALL="${BUN_INSTALL:-$HOME/.bun}"
 export PATH="$BUN_INSTALL/bin:$HOME/.local/share/fnm:$PATH"
 [ -x "$HOME/.local/share/fnm/fnm" ] && eval "$($HOME/.local/share/fnm/fnm env)" 2>/dev/null
 
-# Install Bun
+# ── Bun ──────────────────────────────────────────────────────────────────
 if command -v bun &>/dev/null; then
   echo "  Bun already installed: $(bun --version)"
 else
@@ -17,7 +18,7 @@ else
   echo "  Bun installed: $(bun --version)"
 fi
 
-# Install Node.js
+# ── Node.js ──────────────────────────────────────────────────────────────
 if command -v node &>/dev/null; then
   echo "  Node.js already installed: $(node --version)"
 else
@@ -29,6 +30,7 @@ else
   echo "  Node.js installed: $(node --version)"
 fi
 
+# ── Shell paths ──────────────────────────────────────────────────────────
 if ! grep -q '.bun/bin' ~/.bashrc 2>/dev/null; then
   echo '' >> ~/.bashrc
   echo 'export BUN_INSTALL="$HOME/.bun"' >> ~/.bashrc
@@ -41,7 +43,16 @@ if [ -x "$HOME/.local/share/fnm/fnm" ] && ! grep -q "fnm env" ~/.bashrc 2>/dev/n
   echo 'eval "$(fnm env)"' >> ~/.bashrc
 fi
 
-# Install Claude Code
+# ── Wrangler (Cloudflare CLI) ────────────────────────────────────────────
+if npx wrangler --version &>/dev/null; then
+  echo "  Wrangler available: $(npx wrangler --version 2>/dev/null)"
+else
+  echo "  Installing Wrangler..."
+  npm install -g wrangler
+  echo "  Wrangler installed: $(wrangler --version)"
+fi
+
+# ── Claude Code ──────────────────────────────────────────────────────────
 if command -v claude &>/dev/null; then
   echo "  Claude Code already installed."
 else
@@ -50,9 +61,11 @@ else
 fi
 
 echo ""
-echo "Done."
+echo "Done. Commands:"
 echo ""
-echo "  bunx serve .         Serve the app on port 8080"
+echo "  node dev-server.js   Dev server with mock auth (port 8080)"
 echo "  claude               Start Claude Code"
 echo ""
-echo "  Open http://localhost:8080 to practice."
+echo "  Test key: test-123"
+echo "  Enter page: http://localhost:8080/enter"
+echo ""
