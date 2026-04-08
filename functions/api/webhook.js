@@ -46,9 +46,20 @@ export async function onRequestPost(context) {
     return new Response('Unauthorized', { status: 401 });
   }
 
-  // Handle refund — revoke access
+  // Handle refund — revoke access and clean up email index
   if (refunded === 'true') {
     if (licenseKey) {
+      // Remove key from email index before deleting
+      const record = await env.SHOSHIN_KEYS.get(`key:${licenseKey}`, 'json');
+      if (record?.email) {
+        const index = await env.SHOSHIN_KEYS.get(`email:${record.email}`, 'json') || { keys: [] };
+        index.keys = index.keys.filter(k => k !== licenseKey);
+        if (index.keys.length > 0) {
+          await env.SHOSHIN_KEYS.put(`email:${record.email}`, JSON.stringify(index));
+        } else {
+          await env.SHOSHIN_KEYS.delete(`email:${record.email}`);
+        }
+      }
       await env.SHOSHIN_KEYS.delete(`key:${licenseKey}`);
     }
     return new Response('Revoked', { status: 200 });
@@ -80,6 +91,15 @@ export async function onRequestPost(context) {
   };
 
   await env.SHOSHIN_KEYS.put(`key:${licenseKey}`, JSON.stringify(record));
+
+  // Update email reverse index
+  if (email) {
+    const index = await env.SHOSHIN_KEYS.get(`email:${email}`, 'json') || { keys: [] };
+    if (!index.keys.includes(licenseKey)) {
+      index.keys.push(licenseKey);
+    }
+    await env.SHOSHIN_KEYS.put(`email:${email}`, JSON.stringify(index));
+  }
 
   return new Response('OK', { status: 200 });
 }
