@@ -6,7 +6,7 @@ const PUBLIC_PATHS = ['/enter', '/enter.html', '/api/'];
 // Dev/config files that should never be served
 const BLOCKED_FILES = [
   '/CLAUDE.md', '/SETUP.md', '/README.md',
-  '/dev-init.sh', '/.devcontainer',
+  '/dev-init.sh', '/.devcontainer', '/docs',
 ];
 
 function isBlocked(pathname) {
